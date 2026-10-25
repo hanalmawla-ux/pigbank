@@ -1,0 +1,9 @@
+{
+  "name": "PigBank",
+  "short_name": "PigBank",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#0F172A",
+  "theme_color": "#3B82F6",
+  "icons": [{"src": "https://cdn-icons-png.flaticon.com/512/3069/3069172.png","sizes":"512x512","type":"image/png"}]
+}
