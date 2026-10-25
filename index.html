@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PigBank - حصالتك الذكية</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;800&family=Outfit:wght@700;800&display=swap" rel="stylesheet">
+<style>
+:root{--primary:#3B82F6;--bg:#0F172A;--card:#1E293B;--card2:#273449;--text:#F8FAFC;--text2:#94A3B8;--border:rgba(255,255,255,0.08)}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Tajawal','Outfit',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+.top{padding:18px 20px;display:flex;justify-content:space-between;align-items:center}
+.logo{display:flex;gap:10px;align-items:center}
+.logo-icon{width:40px;height:40px;background:var(--card);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px}
+.hero{margin:12px 16px;background:var(--card);border:1px solid var(--border);border-radius:28px;padding:22px}
+.badge{color:var(--primary);font-family:'Outfit';font-weight:700;font-size:11px}
+.hero h2{font-family:'Outfit';font-size:32px;font-weight:800;margin:14px 0}
+.hero h2 b{color:var(--primary)}
+.btn-primary{width:100%;padding:16px;border:none;border-radius:18px;background:var(--primary);color:white;font-weight:700;font-size:16px;display:flex;align-items:center;justify-content:center;gap:8px;cursor:pointer}
+.cards{padding:0 16px 100px;display:flex;flex-direction:column;gap:14px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:24px;overflow:hidden}
+.card-img{height:150px;display:flex;align-items:center;justify-content:center;font-size:72px}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,0.6);display:none;align-items:end;z-index:100}
+.modal.show{display:flex}
+.sheet{width:100%;background:var(--card);border-radius:28px 28px 0 0;padding:20px;max-height:92vh;overflow:auto}
+.tabs{display:flex;background:var(--card2);border-radius:14px;padding:4px;margin-bottom:16px}
+.tabs button{flex:1;padding:10px;border:none;border-radius:10px;background:none;color:var(--text2);font-weight:700}
+.tabs button.on{background:var(--card);color:var(--text)}
+.emoji-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.emoji-item{aspect-ratio:1;background:var(--card2);border:2px solid transparent;border-radius:18px;display:flex;align-items:center;justify-content:center;font-size:32px;cursor:pointer}
+.emoji-item.sel{border-color:var(--primary)}
+.input{width:100%;padding:14px 16px;border-radius:14px;border:1px solid var(--border);background:var(--card2);color:var(--text);font-family:'Tajawal';font-size:15px;margin-bottom:12px;outline:none}
+.nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-top:1px solid var(--border);display:flex;padding:8px 0}
+.nav button{flex:1;background:none;border:none;color:var(--text2);font-size:11px;display:flex;flex-direction:column;align-items:center;gap:4px}
+.nav button.active{color:var(--primary)}
+.colors{display:flex;gap:10px;flex-wrap:wrap}
+.color{width:42px;height:42px;border-radius:50%;cursor:pointer;border:3px solid transparent}
+.color.sel{border-color:white;transform:scale(1.1)}
+</style>
+</head>
+<body>
+<div class="top"><div class="logo"><div class="logo-icon">🐷</div><div><h1>PigBank.</h1><p style="font-size:12px;color:var(--text2)">خطوة أقرب إلى أحلامك</p></div></div></div>
+<div class="hero"><div class="badge">♡ DREAM. SAVE. REPEAT.</div><h2>Small savings.<br><b>Big dreams.</b></h2><p style="color:var(--text2);font-size:14px;margin-bottom:18px">Your next big thing starts with a little. Every coin counts.</p><button class="btn-primary" onclick="openAdd()">+ Add new goal</button></div>
+<div style="text-align:center;padding:10px;color:var(--text2);font-size:13px">🛡️ Saved on your device</div>
+<div style="display:flex;align-items:center;gap:10px;padding:0 20px;margin:10px 0"><h3>Your dream list</h3><span id="count" style="background:var(--card);padding:2px 10px;border-radius:20px;font-size:13px">0</span></div>
+<div id="cards" class="cards"></div>
+<nav class="nav"><button class="active">🏠 مدخراتي</button><button>📊 إحصائيات</button><button onclick="document.getElementById('set').style.display='block'">⚙️ إعدادات</button></nav>
+<div id="modal" class="modal" onclick="if(event.target==this)closeAdd()"><div class="sheet"><h3>✨ هدف جديد</h3><div class="tabs"><button id="tEmoji" class="on" onclick="setTab('emoji')">😊 إيموجي لطيف</button><button id="tImg" onclick="setTab('img')">📸 صورة</button></div><div id="emojiPane"><div class="emoji-grid" id="emojiGrid"></div></div><div id="imgPane" style="display:none"><div style="border:2px dashed var(--border);border-radius:18px;padding:20px;text-align:center;cursor:pointer" onclick="document.getElementById('file').click()">📤 اضغطي لاختيار صورة حلمك</div><input type="file" id="file" accept="image/*" hidden></div><input id="gName" class="input" placeholder="اسم الهدف - بيت، لابتوب"><input id="gAmount" class="input" type="number" placeholder="المبلغ"><button class="btn-primary" onclick="saveGoal()">💾 حفظ الهدف</button></div></div>
+<div id="set" style="display:none;position:fixed;inset:0;background:var(--bg);z-index:50;padding:20px"><h2>الإعدادات</h2><div style="margin-top:20px;background:var(--card);padding:18px;border-radius:20px"><h4>🎨 لون الثيم - اختاري لونك</h4><div class="colors" id="colors" style="margin-top:12px"></div><p style="margin-top:12px;color:var(--text2);font-size:13px">💙 أزرق 🩷 وردي 💜 بنفسجي 💚 أخضر 🧡 برتقالي ❤️ أحمر</p></div><button class="btn-primary" style="margin-top:20px" onclick="document.getElementById('set').style.display='none'">رجوع</button></div>
+<script>
+const emojis=['🏠','💻','📱','🚗','✈️','🎓','💍','🎮','👗','🏍️','🎁','🏖️','📚','🎸','🐶','⌚'];
+const colors=['#3B82F6','#EC4899','#8B5CF6','#10B981','#F59E0B','#EF4444'];
+let theme=localStorage.getItem('th')||'#3B82F6',selEmoji='🏠',selImg=null,curTab='emoji',goals=JSON.parse(localStorage.getItem('pig_goals')||'[]');
+function init(){
+document.getElementById('emojiGrid').innerHTML=emojis.map((e,i)=>`<div class="emoji-item ${e==selEmoji?'sel':''}" onclick="pick(${i})">${e}</div>`).join('');
+document.getElementById('colors').innerHTML=colors.map(c=>`<div class="color ${c==theme?'sel':''}" style="background:${c}" onclick="setColor('${c}')"></div>`).join('');
+document.documentElement.style.setProperty('--primary',theme);render();
+document.getElementById('file').addEventListener('change',e=>{const f=e.target.files[0];const r=new FileReader();r.onload=ev=>selImg=ev.target.result;r.readAsDataURL(f);});
+}
+function pick(i){selEmoji=emojis[i];document.querySelectorAll('.emoji-item').forEach((el,idx)=>el.classList.toggle('sel',idx==i));}
+function setColor(c){theme=c;localStorage.setItem('th',c);document.documentElement.style.setProperty('--primary',c);document.getElementById('colors').innerHTML=colors.map(x=>`<div class="color ${x==theme?'sel':''}" style="background:${x}" onclick="setColor('${x}')"></div>`).join('');}
+function setTab(t){curTab=t;document.getElementById('tEmoji').className=t=='emoji'?'on':'';document.getElementById('tImg').className=t=='img'?'on':'';document.getElementById('emojiPane').style.display=t=='emoji'?'block':'none';document.getElementById('imgPane').style.display=t=='img'?'block':'none';}
+function openAdd(){document.getElementById('modal').classList.add('show');}
+function closeAdd(){document.getElementById('modal').classList.remove('show');}
+function saveGoal(){const n=document.getElementById('gName').value.trim();const a=parseFloat(document.getElementById('gAmount').value);if(!n||!a){alert('عبي الاسم والمبلغ');return;}goals.unshift({name:n,target:a,saved:0,emoji:selEmoji,img:curTab=='img'?selImg:null});localStorage.setItem('pig_goals',JSON.stringify(goals));closeAdd();render();}
+function render(){document.getElementById('count').textContent=goals.length;document.getElementById('cards').innerHTML=goals.map((g,i)=>{const p=Math.min(100,Math.round((g.saved/g.target)*100));const img=g.img?`<img src="${g.img}" style="width:100%;height:100%;object-fit:cover">`:`<div style="font-size:64px">${g.emoji}</div>`;return `<div class="card"><div class="card-img">${img}</div><div style="padding:14px"><div style="display:flex;justify-content:space-between"><h4>${g.name}</h4><span onclick="goals.splice(${i},1);localStorage.setItem('pig_goals',JSON.stringify(goals));render()" style="cursor:pointer">🗑️</span></div><div style="height:8px;background:var(--card2);border-radius:10px;margin:10px 0"><i style="display:block;height:100%;width:${p}%;background:var(--primary);border-radius:10px"></i></div><div style="display:flex;justify-content:space-between;font-size:12px;color:var(--text2)"><span><b>${g.saved}</b> / ${g.target}</span><span>${p}%</span></div><button class="btn-primary" style="margin-top:12px;padding:12px" onclick="let v=prompt('كم حوشت؟');if(v){goals[${i}].saved+=parseFloat(v);localStorage.setItem('pig_goals',JSON.stringify(goals));render()}">+ إضافة مبلغ</button></div></div>`}).join('');}
+init();
+</script>
+</body>
+</html>
