@@ -4,6 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>PigBank - حصالتك الذكية</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#3B82F6">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;800&family=Outfit:wght@700;800&display=swap" rel="stylesheet">
 <style>
 :root{--primary:#3B82F6;--bg:#0F172A;--card:#1E293B;--card2:#273449;--text:#F8FAFC;--text2:#94A3B8;--border:rgba(255,255,255,0.08)}
@@ -65,6 +69,7 @@ function closeAdd(){document.getElementById('modal').classList.remove('show');}
 function saveGoal(){const n=document.getElementById('gName').value.trim();const a=parseFloat(document.getElementById('gAmount').value);if(!n||!a){alert('عبي الاسم والمبلغ');return;}goals.unshift({name:n,target:a,saved:0,emoji:selEmoji,img:curTab=='img'?selImg:null});localStorage.setItem('pig_goals',JSON.stringify(goals));closeAdd();render();}
 function render(){document.getElementById('count').textContent=goals.length;document.getElementById('cards').innerHTML=goals.map((g,i)=>{const p=Math.min(100,Math.round((g.saved/g.target)*100));const img=g.img?`<img src="${g.img}" style="width:100%;height:100%;object-fit:cover">`:`<div style="font-size:64px">${g.emoji}</div>`;return `<div class="card"><div class="card-img">${img}</div><div style="padding:14px"><div style="display:flex;justify-content:space-between"><h4>${g.name}</h4><span onclick="goals.splice(${i},1);localStorage.setItem('pig_goals',JSON.stringify(goals));render()" style="cursor:pointer">🗑️</span></div><div style="height:8px;background:var(--card2);border-radius:10px;margin:10px 0"><i style="display:block;height:100%;width:${p}%;background:var(--primary);border-radius:10px"></i></div><div style="display:flex;justify-content:space-between;font-size:12px;color:var(--text2)"><span><b>${g.saved}</b> / ${g.target}</span><span>${p}%</span></div><button class="btn-primary" style="margin-top:12px;padding:12px" onclick="let v=prompt('كم حوشت؟');if(v){goals[${i}].saved+=parseFloat(v);localStorage.setItem('pig_goals',JSON.stringify(goals));render()}">+ إضافة مبلغ</button></div></div>`}).join('');}
 init();
+if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js');}
 </script>
 </body>
 </html>
